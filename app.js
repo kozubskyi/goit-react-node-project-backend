@@ -5,9 +5,9 @@ const cors = require("cors")
 const mongoose = require("mongoose")
 const logger = require("morgan")
 
-const { authController } = require("./controllers/auth/auth.controller")
-const { balanceController } = require("./controllers/balances/balances.controller")
-const { transactionsController } = require("./controllers/transactions/transactions.controller")
+const { authController } = require("./controllers/auth.controller")
+const { balanceController } = require("./controllers/balance.controller")
+const { transactionsController } = require("./controllers/transactions.controller")
 
 const app = express()
 
@@ -36,7 +36,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use("/api/v1/auth", authController)
-app.use("/api/v1/balances", balanceController)
+app.use("/api/v1/balance", balanceController)
 app.use("/api/v1/transaction", transactionsController)
 
 app.use((err, req, res, next) => {
