@@ -1,37 +1,51 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
-const bcryptjs = require("bcryptjs");
-require("dotenv").config();
+const mongoose = require("mongoose")
+const bcryptjs = require("bcryptjs")
 
-const userSchema = new Schema(
+const userSchema = new mongoose.Schema(
   {
     email: {
       type: String,
       required: [true, "Email is required"],
-      unique: true
+      unique: true,
     },
     passwordHash: {
       type: String,
-      required: [true, "Password is required"]
+      required: [true, "Password is required"],
     },
     token: {
       type: String,
-      default: null
+      default: null,
     },
     verificationToken: {
       type: String,
-      required: [true, "Verify token is required"]
-    }
+      default: null,
+    },
+    balance: {
+      type: Number,
+      default: 0,
+    },
+    transactions: {
+      income: { type: Array },
+      expenses: { type: Array },
+    },
   },
   { versionKey: false }
-);
+)
 
-userSchema.statics.hashPassword = async password => {
-  return bcryptjs.hash(password, parseInt(process.env.BCRYPT_SALT_ROUNDS));
-};
+// Пример хранения транзакции
+// const transaction = {
+//   category: String,
+//   sum: Number,
+//   time: Date,
+//   description: String,
+// }
+
+userSchema.statics.hashPassword = async (password) => {
+  return bcryptjs.hash(password, parseInt(process.env.BCRYPT_SALT_ROUNDS))
+}
 
 userSchema.statics.isPasswordCorrect = async (password, passwordHash) => {
-  return bcryptjs.compare(password, passwordHash);
-};
+  return bcryptjs.compare(password, passwordHash)
+}
 
-exports.UserModel = mongoose.model("User", userSchema);
+exports.UserModel = mongoose.model("User", userSchema)
