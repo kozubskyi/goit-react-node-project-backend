@@ -14,7 +14,7 @@ const app = express()
 dotenv.config({ path: path.join(__dirname, ".env") })
 
 mongoose.connect(
-  process.env.MONGODB_URL,
+  process.env.MONGODB_URI,
   {
     useUnifiedTopology: true,
     useNewUrlParser: true,
