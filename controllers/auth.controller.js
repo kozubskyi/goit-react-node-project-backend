@@ -1,8 +1,9 @@
 const { Router } = require("express");
 const router = Router();
+
 const { asyncWrapper } = require("../../middlewares/async-wrapper");
 const { userSchema } = require("../../schemes/auth.schema");
-const { validate } = require("../../middlewares/validation");
+const { validate } = require("../../middlewares/validate");
 const { authService } = require("../../services/auth/auth.service");
 const { authorize } = require("../../middlewares/authorize");
 const { prepareUser } = require("../../serializers/user.serializer");
