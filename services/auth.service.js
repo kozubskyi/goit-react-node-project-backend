@@ -1,5 +1,5 @@
 const { Conflict, NotFound, Forbidden, UpgradeRequired } = require("http-errors");
-const { UserModel } = require("../../models/user.model");
+const { UserModel } = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuid");
 
@@ -27,7 +27,7 @@ class AuthService {
       throw new Forbidden(`Provided password is wrong`);
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_AT
+      expiresIn: process.env.JWT_EXPIRES_IN
     });
     return { user, token };
   }
