@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema(
 
 // Пример хранения транзакции
 // const transaction = {
+//   id: String,
 //   category: String,
 //   sum: Number,
 //   time: Date,
