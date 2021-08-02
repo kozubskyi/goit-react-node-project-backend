@@ -12,7 +12,7 @@ router.post(
   authorize,
   validate(balanceSchema),
   asyncWrapper(async (req, res, next) => {
-    await balanceService.setBalance(req.body.balance, req.user._id)
+    await balanceService.setBalance(req.user._id, req.body.balance)
 
     res.status(201).json({ message: "User balance has been updated" })
   })
