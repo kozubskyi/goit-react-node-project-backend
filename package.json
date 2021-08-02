@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "start": "cross-env NODE_ENV=production node ./app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development nodemon ./app.js"
   },
@@ -16,8 +17,8 @@
   "bugs": {
     "url": "https://github.com/kozubskyi/goit-react-node-project-backend/issues"
   },
-  "homepage": "https://github.com/kozubskyi/goit-react-node-project-backend#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.5",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
@@ -25,6 +26,7 @@
     "express": "^4.17.1",
     "http-errors": "^1.8.0",
     "joi": "^17.4.2",
+    "joi-objectid": "^3.0.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.5",
     "morgan": "^1.10.0",
