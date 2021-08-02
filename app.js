@@ -37,7 +37,7 @@ app.use(express.json())
 
 app.use("/api/v1/auth", authController)
 app.use("/api/v1/balance", balanceController)
-app.use("/api/v1/transaction", transactionsController)
+app.use("/api/v1/transactions", transactionsController)
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ message: err.message })
