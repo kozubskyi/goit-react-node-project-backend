@@ -32,15 +32,6 @@ const userSchema = new mongoose.Schema(
   { versionKey: false }
 )
 
-// Пример хранения транзакции
-// const transaction = {
-//   id: String,
-//   category: String,
-//   sum: Number,
-//   time: Date,
-//   description: String,
-// }
-
 userSchema.statics.hashPassword = async (password) => {
   return bcryptjs.hash(password, parseInt(process.env.BCRYPT_SALT_ROUNDS))
 }
