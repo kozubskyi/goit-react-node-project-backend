@@ -70,14 +70,14 @@ class TransactionsService {
     }
 
     const thisYearTransactions = userTransactions.filter((transaction) => {
-      const transactionYear = transaction.date.split(".")[2]
-      const currentYear = new Date(Date.now()).getFullYear().toString()
+      const transactionYear = Number(transaction.date.split(".")[2])
+      const currentYear = new Date(Date.now()).getFullYear()
       return transactionYear === currentYear
     })
 
     thisYearTransactions.forEach((transaction) => {
-      const transactionMonthNumber = transaction.date.split(".")[1]
-      const month = obj[transactionMonthNumber]
+      const transactionMonth = transaction.date.split(".")[1]
+      const month = obj[transactionMonth]
       summary[month] += transaction.sum
     })
 
