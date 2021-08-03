@@ -20,10 +20,13 @@ class TransactionsService {
 
   async deleteTransaction(userId, transactionId) {
     const transaction = await TransactionModel.findById(transactionId)
+    const user = await UserModel.findById(userId)
 
     if (!transaction) throw new BadRequest(`There is no transaction with id '${transactionId}'`)
 
     if (transaction.owner.toString() !== userId.toString()) throw new Forbidden(`You can't delete this transaction`)
+
+    await TransactionModel.findByIdAndDelete(transactionId)
 
     if (transaction.type === "expense") {
       await UserModel.findByIdAndUpdate(userId, { balance: user.balance + transaction.sum })
@@ -31,8 +34,6 @@ class TransactionsService {
     if (transaction.type === "income") {
       await UserModel.findByIdAndUpdate(userId, { balance: user.balance - transaction.sum })
     }
-
-    await TransactionModel.findByIdAndDelete(transactionId)
   }
 
   async getTransactionsByMonth(userId, month, type = "expense") {
