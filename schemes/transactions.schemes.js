@@ -1,6 +1,7 @@
 const Joi = require("joi").extend(require("@joi/date"))
 
 exports.expenseTransactionSchema = Joi.object({
+  type: Joi.string().valid("expense").required(),
   category: Joi.string()
     .valid(
       "products",
@@ -18,14 +19,17 @@ exports.expenseTransactionSchema = Joi.object({
     .required(),
   sum: Joi.number().required(),
   description: Joi.string().required(),
-  date: Joi.date().format("YYYY-MM-DD").required(),
+  date: Joi.date().format("DD.MM.YYYY").required(),
+  // owner: Joi.required(),
 })
 
 exports.incomeTransactionSchema = Joi.object({
+  type: Joi.string().valid("income").required(),
   category: Joi.string().valid("salary", "others").required(),
   sum: Joi.number().required(),
   description: Joi.string().required(),
-  date: Joi.date().format("YYYY-MM-DD").required(),
+  date: Joi.date().format("DD.MM.YYYY").required(),
+  // owner: Joi.required(),
 })
 
 exports.monthSchema = Joi.object({
