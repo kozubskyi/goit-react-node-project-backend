@@ -5,10 +5,11 @@ const userSchema = new mongoose.Schema(
   {
     email: {
       type: String,
+      // match:
       required: [true, "Email is required"],
       unique: true,
     },
-    passwordHash: {
+    password: {
       type: String,
       required: [true, "Password is required"],
     },
@@ -20,26 +21,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
     balance: {
       type: Number,
       default: 0,
     },
-    transactions: {
-      income: { type: Array },
-      expenses: { type: Array },
-    },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 )
-
-// Пример хранения транзакции
-// const transaction = {
-//   id: String,
-//   category: String,
-//   sum: Number,
-//   time: Date,
-//   description: String,
-// }
 
 userSchema.statics.hashPassword = async (password) => {
   return bcryptjs.hash(password, parseInt(process.env.BCRYPT_SALT_ROUNDS))

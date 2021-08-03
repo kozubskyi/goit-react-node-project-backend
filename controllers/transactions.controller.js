@@ -13,9 +13,9 @@ router.post(
   authorize,
   validate(expenseTransactionSchema),
   asyncWrapper(async (req, res, next) => {
-    const { balance, transactions } = await transactionsService.addExpenseTransaction(req.user, req.body)
+    const transaction = await transactionsService.addTransaction(req.user._id, req.body)
 
-    res.status(201).json({ balance, expenses: transactions.expenses })
+    res.status(201).json(transaction)
   })
 )
 
@@ -24,20 +24,20 @@ router.post(
   authorize,
   validate(incomeTransactionSchema),
   asyncWrapper(async (req, res, next) => {
-    const { balance, transactions } = await transactionsService.addIncomeTransaction(req.user, req.body)
+    const transaction = await transactionsService.addTransaction(req.user._id, req.body)
 
-    res.status(201).json({ balance, income: transactions.income })
+    res.status(201).json(transaction)
   })
 )
 
 router.delete(
-  "/delete/:transactionId",
+  "/:transactionId",
   authorize,
   validate(createSchema("transactionId"), "params"),
   asyncWrapper(async (req, res, next) => {
-    const { balance, transactions } = await transactionsService.deleteTransaction(req.user, req.params.transactionId)
+    await transactionsService.deleteTransaction(req.user._id, req.params.transactionId)
 
-    res.status(200).json({ balance, transactions })
+    res.status(200).json({ message: "Transaction has been deleted" })
   })
 )
 
@@ -46,7 +46,7 @@ router.get(
   authorize,
   validate(monthSchema, "params"),
   asyncWrapper(async (req, res, next) => {
-    const expenses = await transactionsService.getTransactionsByMonth(req.user.transactions.expenses, req.params.month)
+    const expenses = await transactionsService.getTransactionsByMonth(req.user._id, req.params.month, "expense")
 
     res.status(200).json({ expenses })
   })
@@ -57,7 +57,7 @@ router.get(
   authorize,
   validate(monthSchema, "params"),
   asyncWrapper(async (req, res, next) => {
-    const income = await transactionsService.getTransactionsByMonth(req.user.transactions.income, req.params.month)
+    const income = await transactionsService.getTransactionsByMonth(req.user._id, req.params.month, "income")
 
     res.status(200).json({ income })
   })
