@@ -1,6 +1,4 @@
-const { UserModel } = require("../models/user.model")
 const { TransactionModel } = require("../models/transaction.model")
-const uuid = require("uuid")
 const { BadRequest, Forbidden } = require("http-errors")
 const { ObjectId } = require("mongodb")
 
