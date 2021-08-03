@@ -36,17 +36,52 @@ class TransactionsService {
     }
   }
 
-  async getTransactionsByMonth(userId, month, type = "expense") {
+  async getSummary(userId, type = "expense") {
     const userTransactions = await TransactionModel.find({ owner: new ObjectId(userId), type })
 
-    const neededTransactions = userTransactions.filter((transaction) => {
-      const dateArr = transaction.date.split(".")
-      const transactionMonth = `${dateArr[1]}-${dateArr[2]}`
+    const obj = {
+      "01": "jan",
+      "02": "feb",
+      "03": "mar",
+      "04": "apr",
+      "05": "may",
+      "06": "jun",
+      "07": "jul",
+      "08": "aug",
+      "09": "sep",
+      10: "oct",
+      11: "nov",
+      12: "dec",
+    }
 
-      return transactionMonth === month
+    const summary = {
+      jan: 0,
+      feb: 0,
+      mar: 0,
+      apr: 0,
+      may: 0,
+      jun: 0,
+      jul: 0,
+      aug: 0,
+      sep: 0,
+      oct: 0,
+      nov: 0,
+      dec: 0,
+    }
+
+    const thisYearTransactions = userTransactions.filter((transaction) => {
+      const transactionYear = transaction.date.split(".")[2]
+      const currentYear = new Date(Date.now()).getFullYear().toString()
+      return transactionYear === currentYear
     })
 
-    return neededTransactions
+    thisYearTransactions.forEach((transaction) => {
+      const transactionMonthNumber = transaction.date.split(".")[1]
+      const month = obj[transactionMonthNumber]
+      summary[month] += transaction.sum
+    })
+
+    return summary
   }
 }
 

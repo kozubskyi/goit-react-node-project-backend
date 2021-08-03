@@ -42,24 +42,22 @@ router.delete(
 )
 
 router.get(
-  "/expenses/:month",
+  "/expenses/summary",
   authorize,
-  validate(monthSchema, "params"),
   asyncWrapper(async (req, res, next) => {
-    const expenses = await transactionsService.getTransactionsByMonth(req.user._id, req.params.month, "expense")
+    const summary = await transactionsService.getSummary(req.user._id, "expense")
 
-    res.status(200).json({ expenses })
+    res.status(200).json({ summary })
   })
 )
 
 router.get(
-  "/income/:month",
+  "/income/summary",
   authorize,
-  validate(monthSchema, "params"),
   asyncWrapper(async (req, res, next) => {
-    const income = await transactionsService.getTransactionsByMonth(req.user._id, req.params.month, "income")
+    const summary = await transactionsService.getSummary(req.user._id, "income")
 
-    res.status(200).json({ income })
+    res.status(200).json({ summary })
   })
 )
 
