@@ -3,7 +3,7 @@ const router = Router()
 
 const { authorize } = require("../middlewares/authorize")
 const { validate } = require("../middlewares/validate")
-const { expenseTransactionSchema, incomeTransactionSchema } = require("../schemes/transactions.schemes")
+const { expenseTransactionSchema, incomeTransactionSchema, monthSchema } = require("../schemes/transactions.schemes")
 const { asyncWrapper } = require("../middlewares/async-wrapper")
 const { transactionsService } = require("../services/transactions.service")
 const { createSchema } = require("../middlewares/create-schema")
@@ -44,7 +44,7 @@ router.delete(
 router.get(
   "/expenses/:month",
   authorize,
-  validate(createSchema("month"), "params"),
+  validate(monthSchema, "params"),
   asyncWrapper(async (req, res, next) => {
     const expenses = await transactionsService.getTransactionsByMonth(req.user.transactions.expenses, req.params.month)
 
@@ -55,7 +55,7 @@ router.get(
 router.get(
   "/income/:month",
   authorize,
-  validate(createSchema("month"), "params"),
+  validate(monthSchema, "params"),
   asyncWrapper(async (req, res, next) => {
     const income = await transactionsService.getTransactionsByMonth(req.user.transactions.income, req.params.month)
 

@@ -75,8 +75,6 @@ class TransactionsService {
       return transactionMonth === month
     })
 
-    if (filteredTransactions.length === 0) throw new BadRequest("No transactions in this month or bad request")
-
     return filteredTransactions
   }
 }
