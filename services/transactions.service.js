@@ -20,13 +20,13 @@ class TransactionsService {
   }
 
   async getTransactionsByMonth(userId, month, type = "expense") {
-    const userTransactions = await TransactionModel.find({ owner: new ObjectId(userId) })
+    const userTransactions = await TransactionModel.find({ owner: new ObjectId(userId), type })
 
     const neededTransactions = userTransactions.filter((transaction) => {
       const dateArr = transaction.date.split(".")
       const transactionMonth = `${dateArr[1]}-${dateArr[2]}`
 
-      return transaction.type === type && transactionMonth === month
+      return transactionMonth === month
     })
 
     return neededTransactions
