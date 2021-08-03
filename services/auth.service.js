@@ -1,4 +1,4 @@
-const { Conflict, NotFound, Forbidden, UpgradeRequired } = require("http-errors");
+const { Conflict, NotFound, Forbidden } = require("http-errors");
 const { UserModel } = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuid");
@@ -11,7 +11,7 @@ class AuthService {
     }
     const newUser = await UserModel.create({
       email,
-      passwordHash: await UserModel.hashPassword(password),
+      password: await UserModel.hashPassword(password),
       verificationToken: uuid.v4()
     });
     return newUser;
@@ -22,7 +22,7 @@ class AuthService {
     if (!user) {
       throw new NotFound(`User with email '${email}' not found`);
     }
-    const isPasswordCorrect = await UserModel.isPasswordCorrect(password, user.passwordHash);
+    const isPasswordCorrect = await UserModel.isPasswordCorrect(password, user.password);
     if (!isPasswordCorrect) {
       throw new Forbidden(`Provided password is wrong`);
     }
