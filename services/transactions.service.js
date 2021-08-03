@@ -1,81 +1,37 @@
 const { UserModel } = require("../models/user.model")
+const { TransactionModel } = require("../models/transaction.model")
 const uuid = require("uuid")
-const { BadRequest } = require("http-errors")
+const { BadRequest, Forbidden } = require("http-errors")
+const { ObjectId } = require("mongodb")
 
 class TransactionsService {
-  async addExpenseTransaction(user, transaction) {
-    const transactionWithId = { ...transaction, id: uuid.v4() }
-    const updatedExpenses = [...user.transactions.expenses, transactionWithId]
+  async addTransaction(userId, transaction) {
+    const createdTransaction = await TransactionModel.create({ ...transaction, owner: userId })
 
-    const updatedData = {
-      transactions: { ...user.transactions, expenses: updatedExpenses },
-      balance: user.balance - transaction.sum,
-    }
-
-    const updatedUser = await UserModel.findByIdAndUpdate(user._id, updatedData, { new: true })
-
-    return updatedUser
+    return createdTransaction
   }
 
-  async addIncomeTransaction(user, transaction) {
-    const transactionWithId = { ...transaction, id: uuid.v4() }
-    const updatedIncome = [...user.transactions.income, transactionWithId]
+  async deleteTransaction(userId, transactionId) {
+    const transaction = await TransactionModel.findById(transactionId)
 
-    const updatedData = {
-      transactions: { ...user.transactions, income: updatedIncome },
-      balance: user.balance + transaction.sum,
-    }
+    if (!transaction) throw new BadRequest(`There is no transaction with id '${transactionId}'`)
 
-    const updatedUser = await UserModel.findByIdAndUpdate(user._id, updatedData, { new: true })
+    if (transaction.owner.toString() !== userId.toString()) throw new Forbidden(`You can't delete this transaction`)
 
-    return updatedUser
+    await TransactionModel.findByIdAndDelete(transactionId)
   }
 
-  async deleteTransaction(user, transactionId) {
-    const incomeTransaction = user.transactions.income.find((transaction) => transaction.id === transactionId)
+  async getTransactionsByMonth(userId, month, type = "expense") {
+    const userTransactions = await TransactionModel.find({ owner: new ObjectId(userId) })
 
-    if (!incomeTransaction) {
-      const expenseTransaction = user.transactions.expenses.find((transaction) => transaction.id === transactionId)
+    const neededTransactions = userTransactions.filter((transaction) => {
+      const dateArr = transaction.date.split(".")
+      const transactionMonth = `${dateArr[1]}-${dateArr[2]}`
 
-      if (!expenseTransaction) throw new BadRequest(`Transaction with id '${transactionId}' was not found`)
-
-      const updatedData = {
-        balance: user.balance + expenseTransaction.sum,
-        transactions: {
-          income: user.transactions.income,
-          expenses: user.transactions.expenses.filter((transaction) => transaction.id !== transactionId),
-        },
-      }
-
-      const updatedUser = await UserModel.findByIdAndUpdate(user._id, updatedData, { new: true })
-
-      return updatedUser
-    }
-
-    const updatedData = {
-      balance: user.balance - incomeTransaction.sum,
-      transactions: {
-        income: user.transactions.income.filter((transaction) => transaction.id !== transactionId),
-        expenses: user.transactions.expenses,
-      },
-    }
-
-    const updatedUser = await UserModel.findByIdAndUpdate(user._id, updatedData, { new: true })
-
-    return updatedUser
-  }
-
-  async getTransactionsByMonth(transactions, month) {
-    const filteredTransactions = transactions.filter((transaction) => {
-      const arr = transaction.date.split("-")
-      const transactionMonth = `${arr[1]}-${arr[0]}`
-
-      console.log(transactionMonth, month)
-
-      return transactionMonth === month
+      return transaction.type === type && transactionMonth === month
     })
 
-    return filteredTransactions
+    return neededTransactions
   }
 }
 
