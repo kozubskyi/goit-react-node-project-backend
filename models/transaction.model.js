@@ -2,7 +2,14 @@ const mongoose = require("mongoose")
 
 const transactionSchema = new mongoose.Schema(
   {
+    type: {
+      type: String,
+      enum: ["income", "expense"],
+      required: [true, "Type is required"],
+    },
     category: {
+      // type: mongoose.Schema.Types.ObjectId,
+      // ref: "category",
       type: String,
       required: [true, "Category is required"],
     },
@@ -12,19 +19,20 @@ const transactionSchema = new mongoose.Schema(
     },
     sum: {
       type: Number,
-      min: [0.01, "Sum must be more then 0"],
       required: [true, "Sum is required"],
     },
     date: {
       type: String,
+      // match: 
       required: [true, "Date is required"],
     },
     owner: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
       required: [true, "Owner is required"],
     },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 )
 
 exports.TransactionModel = mongoose.model("Transaction", transactionSchema)
