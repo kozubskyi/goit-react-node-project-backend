@@ -1,4 +1,4 @@
-const Joi = require("joi")
+const Joi = require("joi").extend(require("@joi/date"))
 
 exports.expenseTransactionSchema = Joi.object({
   category: Joi.string()
@@ -18,14 +18,12 @@ exports.expenseTransactionSchema = Joi.object({
     .required(),
   sum: Joi.number().required(),
   description: Joi.string().required(),
+  date: Joi.date().format("YYYY-MM-DD").required(),
 })
 
 exports.incomeTransactionSchema = Joi.object({
   category: Joi.string().valid("salary", "others").required(),
   sum: Joi.number().required(),
   description: Joi.string().required(),
-})
-
-exports.transactionIdSchema = Joi.object({
-  id: Joi.string().required(),
+  date: Joi.date().format("YYYY-MM-DD").required(),
 })
