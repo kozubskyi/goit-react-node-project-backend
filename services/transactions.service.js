@@ -36,7 +36,7 @@ class TransactionsService {
     }
   }
 
-  async getSummary(userId, type = "expense") {
+  async getSummary(userId, type) {
     const userTransactions = await TransactionModel.find({ owner: new ObjectId(userId), type })
 
     const obj = {
