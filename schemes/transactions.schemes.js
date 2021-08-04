@@ -36,6 +36,6 @@ exports.incomeTransactionSchema = Joi.object({
   date: Joi.date().format("DD.MM.YYYY").required(),
 })
 
-exports.monthSchema = Joi.object({
-  month: Joi.date().format("MM-YYYY").required(),
+exports.periodSchema = Joi.object({
+  period: Joi.date().format("MM.YYYY").required(),
 })
