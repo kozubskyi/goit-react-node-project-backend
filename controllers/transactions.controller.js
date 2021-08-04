@@ -3,7 +3,7 @@ const router = Router()
 
 const { authorize } = require("../middlewares/authorize")
 const { validate } = require("../middlewares/validate")
-const { expenseTransactionSchema, incomeTransactionSchema, monthSchema } = require("../schemes/transactions.schemes")
+const { expenseTransactionSchema, incomeTransactionSchema, periodSchema } = require("../schemes/transactions.schemes")
 const { asyncWrapper } = require("../middlewares/async-wrapper")
 const { transactionsService } = require("../services/transactions.service")
 const { createSchema } = require("../middlewares/create-schema")
@@ -58,6 +58,17 @@ router.get(
     const summary = await transactionsService.getSummary(req.user._id, "income")
 
     res.status(200).json({ summary })
+  })
+)
+
+router.get(
+  "/:period",
+  authorize,
+  validate(periodSchema, "params"),
+  asyncWrapper(async (req, res, next) => {
+    const info = await transactionsService.getInfoForPeriod(req.user._id, req.params.period)
+
+    res.status(200).json({ info })
   })
 )
 
