@@ -1,8 +1,7 @@
-const { prepareUser } = require("../serializers/user.serializer");
-
 function prepareUserWithToken(userWithToken) {
   return {
-    user: prepareUser(userWithToken.user),
+    id: userWithToken.user._id,
+    email: userWithToken.user.email,
     token: userWithToken.token
   };
 }
