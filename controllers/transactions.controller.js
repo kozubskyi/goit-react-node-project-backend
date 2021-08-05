@@ -7,6 +7,7 @@ const { expenseTransactionSchema, incomeTransactionSchema, periodSchema } = requ
 const { asyncWrapper } = require("../middlewares/async-wrapper")
 const { transactionsService } = require("../services/transactions.service")
 const { createSchema } = require("../middlewares/create-schema")
+const { expenseCategories, incomeCategories } = require("../variables/categories")
 
 router.post(
   "/expenses",
@@ -69,6 +70,22 @@ router.get(
     const info = await transactionsService.getInfoForPeriod(req.user._id, req.params.period)
 
     res.status(200).json({ info })
+  })
+)
+
+router.get(
+  "/expense/categories",
+  authorize,
+  asyncWrapper(async (req, res, next) => {
+    res.status(200).json(expenseCategories)
+  })
+)
+
+router.get(
+  "/income/categories",
+  authorize,
+  asyncWrapper(async (req, res, next) => {
+    res.status(200).json(incomeCategories)
   })
 )
 
