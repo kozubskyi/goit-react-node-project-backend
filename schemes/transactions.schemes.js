@@ -1,20 +1,5 @@
 const Joi = require("joi").extend(require("@joi/date"))
-
-const expenseCategories = [
-  "products",
-  "alcohol",
-  "entertainment",
-  "health",
-  "transport",
-  "allForHome",
-  "technics",
-  "communalAndConnection",
-  "sportAndHobbies",
-  "education",
-  "others",
-]
-
-const incomeCategories = ["salary", "others"]
+const { expenseCategories, incomeCategories } = require("../variables/categories")
 
 exports.expenseTransactionSchema = Joi.object({
   type: Joi.string().valid("expense").required(),
