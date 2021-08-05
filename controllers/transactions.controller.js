@@ -1,12 +1,12 @@
 const { Router } = require("express");
 const router = Router();
 
-const { authorize } = require("../middlewares/authorize");
-const { validate } = require("../middlewares/validate");
-const { expenseTransactionSchema, incomeTransactionSchema, monthSchema } = require("../schemes/transactions.schemes");
-const { asyncWrapper } = require("../middlewares/async-wrapper");
-const { transactionsService } = require("../services/transactions.service");
-const { createSchema } = require("../middlewares/create-schema");
+const { authorize } = require("../middlewares/authorize")
+const { validate } = require("../middlewares/validate")
+const { expenseTransactionSchema, incomeTransactionSchema, periodSchema } = require("../schemes/transactions.schemes")
+const { asyncWrapper } = require("../middlewares/async-wrapper")
+const { transactionsService } = require("../services/transactions.service")
+const { createSchema } = require("../middlewares/create-schema")
 
 router.post(
   "/expenses",
@@ -61,6 +61,15 @@ router.get(
   })
 );
 
-router.get("/details");
+router.get(
+  "/:period",
+  authorize,
+  validate(periodSchema, "params"),
+  asyncWrapper(async (req, res, next) => {
+    const info = await transactionsService.getInfoForPeriod(req.user._id, req.params.period)
 
-exports.transactionsController = router;
+    res.status(200).json({ info })
+  })
+)
+
+exports.transactionsController = router

@@ -1,6 +1,6 @@
 const { UserModel } = require("../models/user.model")
 
-class BalanceService {
+class UserService {
   async setBalance(id, balance) {
     const updatedUser = await UserModel.findByIdAndUpdate(id, { balance }, { new: true })
 
@@ -8,4 +8,4 @@ class BalanceService {
   }
 }
 
-exports.balanceService = new BalanceService()
+exports.userService = new UserService()
