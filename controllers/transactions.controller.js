@@ -48,7 +48,7 @@ router.get(
   asyncWrapper(async (req, res, next) => {
     const summary = await transactionsService.getSummary(req.user._id, "expense");
 
-    res.status(200).json({ summary });
+    res.status(200).json(summary);
   })
 );
 
@@ -58,7 +58,7 @@ router.get(
   asyncWrapper(async (req, res, next) => {
     const summary = await transactionsService.getSummary(req.user._id, "income");
 
-    res.status(200).json({ summary });
+    res.status(200).json(summary);
   })
 );
 
@@ -69,7 +69,7 @@ router.get(
   asyncWrapper(async (req, res, next) => {
     const info = await transactionsService.getInfoForPeriod(req.user._id, req.params.period)
 
-    res.status(200).json({ info })
+    res.status(200).json(info)
   })
 )
 
