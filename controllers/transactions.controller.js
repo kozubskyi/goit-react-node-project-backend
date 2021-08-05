@@ -1,5 +1,5 @@
-const { Router } = require("express")
-const router = Router()
+const { Router } = require("express");
+const router = Router();
 
 const { authorize } = require("../middlewares/authorize")
 const { validate } = require("../middlewares/validate")
@@ -14,53 +14,53 @@ router.post(
   authorize,
   validate(expenseTransactionSchema),
   asyncWrapper(async (req, res, next) => {
-    const transaction = await transactionsService.addTransaction(req.user._id, req.body)
+    const transaction = await transactionsService.addTransaction(req.user._id, req.body);
 
-    res.status(201).json(transaction)
+    res.status(201).json(transaction);
   })
-)
+);
 
 router.post(
   "/income",
   authorize,
   validate(incomeTransactionSchema),
   asyncWrapper(async (req, res, next) => {
-    const transaction = await transactionsService.addTransaction(req.user._id, req.body)
+    const transaction = await transactionsService.addTransaction(req.user._id, req.body);
 
-    res.status(201).json(transaction)
+    res.status(201).json(transaction);
   })
-)
+);
 
 router.delete(
   "/:transactionId",
   authorize,
   validate(createSchema("transactionId"), "params"),
   asyncWrapper(async (req, res, next) => {
-    await transactionsService.deleteTransaction(req.user._id, req.params.transactionId)
+    await transactionsService.deleteTransaction(req.user._id, req.params.transactionId);
 
-    res.status(200).json({ message: "Transaction has been deleted" })
+    res.status(200).json({ message: "Transaction has been deleted" });
   })
-)
+);
 
 router.get(
   "/expenses/summary",
   authorize,
   asyncWrapper(async (req, res, next) => {
-    const summary = await transactionsService.getSummary(req.user._id, "expense")
+    const summary = await transactionsService.getSummary(req.user._id, "expense");
 
-    res.status(200).json({ summary })
+    res.status(200).json({ summary });
   })
-)
+);
 
 router.get(
   "/income/summary",
   authorize,
   asyncWrapper(async (req, res, next) => {
-    const summary = await transactionsService.getSummary(req.user._id, "income")
+    const summary = await transactionsService.getSummary(req.user._id, "income");
 
-    res.status(200).json({ summary })
+    res.status(200).json({ summary });
   })
-)
+);
 
 router.get(
   "/:period",

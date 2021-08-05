@@ -27,16 +27,16 @@ class AuthService {
       throw new Forbidden(`Provided password is wrong`)
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    })
+      expiresIn: process.env.JWT_EXPIRES_IN
+    });
 
-    await UserModel.findByIdAndUpdate(user._id, { token, verificationToken: null, isActive: true })
+    await UserModel.findOneAndUpdate({ email }, { token, isActive: true, verificationToken: null });
 
-    return { user, token }
+    return { user, token };
   }
 
   async signOut({ _id }) {
-    await UserModel.findByIdAndUpdate(_id, { token: null, isActive: false })
+    await UserModel.findByIdAndUpdate(_id, { token: null, isActive: false });
   }
 }
 
