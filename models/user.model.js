@@ -1,5 +1,5 @@
-const mongoose = require("mongoose")
-const bcryptjs = require("bcryptjs")
+const mongoose = require("mongoose");
+const bcryptjs = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
   {
@@ -7,38 +7,38 @@ const userSchema = new mongoose.Schema(
       type: String,
       // match:
       required: [true, "Email is required"],
-      unique: true,
+      unique: true
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: [true, "Password is required"]
     },
     token: {
       type: String,
-      default: null,
+      default: null
     },
     verificationToken: {
       type: String,
-      default: null,
+      default: null
     },
     isActive: {
       type: Boolean,
-      default: false,
+      default: false
     },
     balance: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   { versionKey: false, timestamps: true }
-)
+);
 
-userSchema.statics.hashPassword = async (password) => {
-  return bcryptjs.hash(password, parseInt(process.env.BCRYPT_SALT_ROUNDS))
-}
+userSchema.statics.hashPassword = async password => {
+  return bcryptjs.hash(password, parseInt(process.env.BCRYPT_SALT_ROUNDS));
+};
 
 userSchema.statics.isPasswordCorrect = async (password, passwordHash) => {
-  return bcryptjs.compare(password, passwordHash)
-}
+  return bcryptjs.compare(password, passwordHash);
+};
 
-exports.UserModel = mongoose.model("User", userSchema)
+exports.UserModel = mongoose.model("User", userSchema);

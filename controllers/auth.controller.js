@@ -9,8 +9,27 @@ const { authorize } = require("../middlewares/authorize");
 const { prepareUser } = require("../serializers/user.serializer");
 const { prepareUserWithToken } = require("../serializers/auth.serializer");
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *   User:
+ *   type:object
+ *     required:
+ *      properties:
+ *       id:
+ *        type:string
+ *        description:The auto-generated id of the user
+ *         email:
+ *          type:string
+ *          description:The email of the user
+ *        example:
+ *         id:610a804086a24935c94d0ffa
+ *         email:anastasiia@gmail.com
+ */
+
 router.post(
-  "/sign-up",
+  "/signup",
   validate(userSchema),
   asyncWrapper(async (req, res, next) => {
     const user = await authService.signUp(req.body);
@@ -19,7 +38,7 @@ router.post(
 );
 
 router.post(
-  "/sign-in",
+  "/signin",
   validate(userSchema),
   asyncWrapper(async (req, res, next) => {
     const userWithToken = await authService.signIn(req.body);
@@ -28,11 +47,11 @@ router.post(
 );
 
 router.post(
-  "/sign-out",
+  "/signout",
   authorize,
   asyncWrapper(async (req, res, next) => {
     await authService.signOut(req.user);
-    return res.status(204).json("The user is signed out");
+    return res.status(204).json({ message: "The user is signed out" });
   })
 );
 

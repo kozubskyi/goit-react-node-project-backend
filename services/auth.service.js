@@ -29,17 +29,14 @@ class AuthService {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN
     });
+
+    await UserModel.findOneAndUpdate({ email }, { token, isActive: true, verificationToken: null }, { new: true });
+
     return { user, token };
   }
 
   async signOut({ _id }) {
-    await UserModel.findByIdAndUpdate(
-      _id,
-      {
-        token: null
-      },
-      { new: true }
-    );
+    await UserModel.findByIdAndUpdate(_id, { token: null, isActive: false }, { new: true });
   }
 }
 
