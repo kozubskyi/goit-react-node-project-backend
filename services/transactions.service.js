@@ -1,42 +1,46 @@
-const { TransactionModel } = require("../models/transaction.model");
-const { UserModel } = require("../models/user.model");
-const { BadRequest, Forbidden } = require("http-errors");
-const { ObjectId } = require("mongodb");
+const { TransactionModel, UserModel, CategoryModel } = require("../models/models")
+const { BadRequest, Forbidden } = require("http-errors")
+// const { Schema } = require("mongoose")
+const { ObjectId } = require("mongodb")
+const { userService } = require("./user.service")
 
-class TransactionsService {
-  async addTransaction(userId, transaction) {
-    const createdTransaction = await TransactionModel.create({ ...transaction, owner: userId });
-    const user = await UserModel.findById(userId);
+exports.transactionsService = {
+  addTransaction: async (userId, transaction) => {
+    const category = await CategoryModel.findOne({ name: transaction.category, type: transaction.type })
 
-    if (transaction.type === "expense") {
-      await UserModel.findByIdAndUpdate(userId, { balance: user.balance - transaction.sum });
+    const createdTransaction = await TransactionModel.create({
+      ...transaction,
+      owner: userId,
+      categoryId: category._id,
+    })
+
+    await userService.updateBalance(userId, transaction, "add")
+
+    const transactionToSend = {
+      id: createdTransaction._id,
+      type: createdTransaction.type,
+      category: createdTransaction.category,
+      description: createdTransaction.description,
+      sum: createdTransaction.sum,
+      date: createdTransaction.date,
     }
-    if (transaction.type === "income") {
-      await UserModel.findByIdAndUpdate(userId, { balance: user.balance + transaction.sum });
-    }
 
-    return createdTransaction;
-  }
+    return transactionToSend
+  },
 
-  async deleteTransaction(userId, transactionId) {
-    const transaction = await TransactionModel.findById(transactionId);
-    const user = await UserModel.findById(userId);
+  deleteTransaction: async (userId, id) => {
+    const transaction = await TransactionModel.findById(id)
 
-    if (!transaction) throw new BadRequest(`There is no transaction with id '${transactionId}'`);
+    if (!transaction) throw new BadRequest(`There is no transaction with id '${id}'`)
 
-    if (transaction.owner.toString() !== userId.toString()) throw new Forbidden(`You can't delete this transaction`);
+    if (transaction.owner.toString() !== userId.toString()) throw new Forbidden(`You can't delete this transaction`)
 
-    await TransactionModel.findByIdAndDelete(transactionId);
+    await TransactionModel.findByIdAndDelete(id)
 
-    if (transaction.type === "expense") {
-      await UserModel.findByIdAndUpdate(userId, { balance: user.balance + transaction.sum });
-    }
-    if (transaction.type === "income") {
-      await UserModel.findByIdAndUpdate(userId, { balance: user.balance - transaction.sum });
-    }
-  }
+    await userService.updateBalance(userId, transaction, "delete")
+  },
 
-  async getSummary(userId, type) {
+  getSummary: async (userId, { type, year }) => {
     const transactions = await TransactionModel.find({ owner: new ObjectId(userId), type })
 
     const obj = {
@@ -51,8 +55,8 @@ class TransactionsService {
       "09": "sep",
       10: "oct",
       11: "nov",
-      12: "dec"
-    };
+      12: "dec",
+    }
 
     const summary = {
       jan: 0,
@@ -66,43 +70,32 @@ class TransactionsService {
       sep: 0,
       oct: 0,
       nov: 0,
-      dec: 0
-    };
+      dec: 0,
+    }
 
     const thisYearTransactions = transactions.filter((transaction) => {
-      const transactionYear = Number(transaction.date.split(".")[2])
-      const currentYear = new Date(Date.now()).getFullYear()
-      return transactionYear === currentYear
+      const transactionYear = transaction.date.split(".")[2]
+      return transactionYear === year
     })
 
-    thisYearTransactions.forEach(transaction => {
-      const transactionMonth = transaction.date.split(".")[1];
-      const month = obj[transactionMonth];
-      summary[month] += transaction.sum;
-    });
+    thisYearTransactions.forEach((transaction) => {
+      const transactionMonth = transaction.date.split(".")[1]
+      const month = obj[transactionMonth]
+      summary[month] += transaction.sum
+    })
 
-    return summary;
-  }
+    return summary
+  },
 
-  async getInfoForPeriod(userId, period) {
-    const transactions = await TransactionModel.find({ owner: new ObjectId(userId) })
+  getTransactionsForPeriod: async (userId, { type, period }) => {
+    // let transactions = await TransactionModel.find({ owner: new Schema.Types.ObjectId(userId), type }) //! Schema.Types.ObjectId не работает
+    let transactions = await TransactionModel.find({ owner: new ObjectId(userId), type })
 
-    const neededTransactions = transactions.filter((transaction) => {
-      const transactionPeriod = transaction.date.substring(3)
+    transactions = transactions.filter((transaction) => {
+      const transactionPeriod = transaction.date.slice(3)
       return transactionPeriod === period
     })
 
-    // const info = {
-    //   expenses: {},
-    //   income: {
-    //     salary: {
-    //       sum,
-    //     },
-    //   },
-    // }
-
-    // return neededTransactions
-  }
+    return transactions
+  },
 }
-
-exports.transactionsService = new TransactionsService();
