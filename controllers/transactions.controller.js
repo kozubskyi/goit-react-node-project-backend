@@ -1,91 +1,57 @@
-const { Router } = require("express");
-const router = Router();
+const { Router } = require("express")
+const router = Router()
 
-const { authorize } = require("../middlewares/authorize")
-const { validate } = require("../middlewares/validate")
-const { expenseTransactionSchema, incomeTransactionSchema, periodSchema } = require("../schemes/transactions.schemes")
-const { asyncWrapper } = require("../middlewares/async-wrapper")
+const { asyncWrapper, validate, authorize, createSchema } = require("../middlewares/middlewares")
+const { validateTransaction } = require("../validation/validate-transaction")
+const { summarySchema, periodSchema } = require("../validation/schemes/transactions.schemes")
 const { transactionsService } = require("../services/transactions.service")
-const { createSchema } = require("../middlewares/create-schema")
-const { expenseCategories, incomeCategories } = require("../variables/categories")
 
 router.post(
-  "/expenses",
+  "/",
   authorize,
-  validate(expenseTransactionSchema),
-  asyncWrapper(async (req, res, next) => {
-    const transaction = await transactionsService.addTransaction(req.user._id, req.body);
+  validateTransaction,
+  asyncWrapper(async (req, res, _) => {
+    const transaction = await transactionsService.addTransaction(req.user._id, req.body)
 
-    res.status(201).json(transaction);
+    const response = {
+      message: "Transaction has been created",
+      transaction,
+    }
+
+    res.status(201).json(response)
   })
-);
-
-router.post(
-  "/income",
-  authorize,
-  validate(incomeTransactionSchema),
-  asyncWrapper(async (req, res, next) => {
-    const transaction = await transactionsService.addTransaction(req.user._id, req.body);
-
-    res.status(201).json(transaction);
-  })
-);
+)
 
 router.delete(
-  "/:transactionId",
+  "/:id",
   authorize,
-  validate(createSchema("transactionId"), "params"),
-  asyncWrapper(async (req, res, next) => {
-    await transactionsService.deleteTransaction(req.user._id, req.params.transactionId);
+  validate(createSchema("id"), "params"),
+  asyncWrapper(async (req, res, _) => {
+    await transactionsService.deleteTransaction(req.user._id, req.params.id)
 
-    res.status(200).json({ message: "Transaction has been deleted" });
+    res.status(200).json({ message: "Transaction has been deleted" })
   })
-);
+)
 
 router.get(
-  "/expenses/summary",
+  "/summary/:type/:year",
   authorize,
-  asyncWrapper(async (req, res, next) => {
-    const summary = await transactionsService.getSummary(req.user._id, "expense");
+  validate(summarySchema, "params"),
+  asyncWrapper(async (req, res, _) => {
+    const summary = await transactionsService.getSummary(req.user._id, req.params)
 
-    res.status(200).json(summary);
+    res.status(200).json(summary)
   })
-);
+)
 
 router.get(
-  "/income/summary",
-  authorize,
-  asyncWrapper(async (req, res, next) => {
-    const summary = await transactionsService.getSummary(req.user._id, "income");
-
-    res.status(200).json(summary);
-  })
-);
-
-router.get(
-  "/:period",
+  "/:type/:period",
   authorize,
   validate(periodSchema, "params"),
-  asyncWrapper(async (req, res, next) => {
-    const info = await transactionsService.getInfoForPeriod(req.user._id, req.params.period)
+  asyncWrapper(async (req, res, _) => {
+    const transactions = await transactionsService.getTransactionsForPeriod(req.user._id, req.params)
 
-    res.status(200).json(info)
-  })
-)
-
-router.get(
-  "/expense/categories",
-  authorize,
-  asyncWrapper(async (req, res, next) => {
-    res.status(200).json(expenseCategories)
-  })
-)
-
-router.get(
-  "/income/categories",
-  authorize,
-  asyncWrapper(async (req, res, next) => {
-    res.status(200).json(incomeCategories)
+    res.status(200).json(transactions)
   })
 )
 
