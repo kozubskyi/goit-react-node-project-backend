@@ -7,29 +7,32 @@ const logger = require("morgan")
 // const swaggerUI = require("swagger-ui-express")
 // const swaggerJsDoc = require("swagger-jsdoc")
 
-const { authController } = require("./controllers/auth.controller")
-const { userController } = require("./controllers/user.controller")
-const { transactionsController } = require("./controllers/transactions.controller")
+const {
+  authController,
+  userController,
+  transactionsController,
+  categoriesController,
+} = require("./controllers/controllers")
 
 const app = express()
 
 dotenv.config({ path: path.join(__dirname, ".env") })
 
-mongoose.connect(
-  process.env.MONGODB_URI,
-  {
+const { PORT = 4000 } = process.env
+
+mongoose
+  .connect(process.env.MONGODB_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
-  },
-  function (err) {
-    if (err) {
-      console.log("Something went wrong. Database is not connected.")
-      process.exit(1)
-    }
+  })
+  .then(() => {
     console.log("Successfully connected to MongoDB🔥🔥🔥")
-  }
-)
+    app.listen(PORT, () => {
+      console.log(`Server's running. Woooohoooo!! It's chilling on ${PORT} port 😎`)
+    })
+  })
+  .catch((err) => console.log("Something went wrong. Database is not connected:", err))
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short"
 
@@ -61,13 +64,8 @@ app.use(express.json())
 app.use("/api/v1/auth", authController)
 app.use("/api/v1/user", userController)
 app.use("/api/v1/transactions", transactionsController)
+app.use("/api/v1/categories", categoriesController)
 
-app.use((err, req, res, next) => {
+app.use((err, _, res, __) => {
   res.status(err.status || 500).json({ message: err.message })
-})
-
-const PORT = process.env.PORT || 4000
-
-app.listen(PORT, () => {
-  console.log(`Server's running. Woooohoooo!! It's chilling on ${PORT} port 😎`)
 })
