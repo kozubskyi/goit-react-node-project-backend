@@ -1,11 +1,19 @@
-const { UserModel } = require("../models/user.model")
+const { UserModel } = require("../models/models")
 
-class UserService {
-  async setBalance(id, balance) {
+exports.userService = {
+  setBalance: async (id, balance) => {
     const updatedUser = await UserModel.findByIdAndUpdate(id, { balance }, { new: true })
 
     return updatedUser.balance
-  }
-}
+  },
 
-exports.userService = new UserService()
+  updateBalance: async (userId, { type, sum }, action) => {
+    const user = await UserModel.findById(userId)
+    let balance
+
+    if (action === "add") balance = type === "expense" ? user.balance - sum : user.balance + sum
+    if (action === "delete") balance = type === "expense" ? user.balance + sum : user.balance - sum
+
+    await UserModel.findByIdAndUpdate(userId, { balance })
+  },
+}
