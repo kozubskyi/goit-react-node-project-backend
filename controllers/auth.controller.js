@@ -1,13 +1,10 @@
-const { Router } = require("express");
-const router = Router();
+const { Router } = require("express")
+const router = Router()
 
-const { asyncWrapper } = require("../middlewares/async-wrapper");
-const { userSchema } = require("../schemes/auth.schema");
-const { validate } = require("../middlewares/validate");
-const { authService } = require("../services/auth.service");
-const { authorize } = require("../middlewares/authorize");
-const { prepareUser } = require("../serializers/user.serializer");
-const { prepareUserWithToken } = require("../serializers/auth.serializer");
+const { asyncWrapper, validate, authorize } = require("../middlewares/middlewares")
+const { userSignUpSchema, userSignInSchema } = require("../validation/schemes/auth.schema")
+const { authService } = require("../services/auth.service")
+const { prepareUser, prepareUserWithToken } = require("../serializers")
 
 /**
  * @swagger
@@ -30,29 +27,42 @@ const { prepareUserWithToken } = require("../serializers/auth.serializer");
 
 router.post(
   "/signup",
-  validate(userSchema),
-  asyncWrapper(async (req, res, next) => {
-    const user = await authService.signUp(req.body);
-    return res.status(201).send(prepareUser(user));
+  validate(userSignUpSchema),
+  asyncWrapper(async (req, res, _) => {
+    const user = await authService.signUp(req.body)
+
+    const response = {
+      message: "User has been created",
+      user: prepareUser(user),
+    }
+
+    res.status(201).json(response)
   })
-);
+)
 
 router.post(
   "/signin",
-  validate(userSchema),
-  asyncWrapper(async (req, res, next) => {
-    const userWithToken = await authService.signIn(req.body);
-    return res.status(200).send(prepareUserWithToken(userWithToken));
+  validate(userSignInSchema),
+  asyncWrapper(async (req, res, _) => {
+    const userWithToken = await authService.signIn(req.body)
+
+    const response = {
+      message: "User has been signed in",
+      user: prepareUserWithToken(userWithToken),
+    }
+
+    res.status(200).json(response)
   })
-);
+)
 
 router.post(
   "/signout",
   authorize,
-  asyncWrapper(async (req, res, next) => {
-    await authService.signOut(req.user);
-    return res.status(204).json({ message: "The user is signed out" });
-  })
-);
+  asyncWrapper(async (req, res, _) => {
+    await authService.signOut(req.user)
 
-exports.authController = router;
+    res.status(204).send()
+  })
+)
+
+exports.authController = router
