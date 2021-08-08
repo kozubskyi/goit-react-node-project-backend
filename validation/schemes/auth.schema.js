@@ -1,17 +1,25 @@
-const Joi = require("joi")
-const { userTypes } = require("../../variables/user-types")
+const Joi = require("joi");
+const { userTypes } = require("../../variables/user-types");
 
 exports.userSignUpSchema = Joi.object({
   email: Joi.string()
-    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+    .email()
+    .trim(true)
     .required(),
-  password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
-  type: Joi.string().valid(...userTypes),
-})
+  password: Joi.string()
+    .min(4)
+    .trim(true)
+    .required(),
+  type: Joi.string().valid(...userTypes)
+});
 
 exports.userSignInSchema = Joi.object({
   email: Joi.string()
-    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+    .email()
+    .trim(true)
     .required(),
-  password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
-})
+  password: Joi.string()
+    .min(4)
+    .trim(true)
+    .required()
+});
