@@ -43,7 +43,7 @@ exports.transactionsService = {
   getSummary: async (userId, { type, year }) => {
     const transactions = await TransactionModel.find({ owner: new ObjectId(userId), type, date: { $regex: year } })
 
-    const obj = {
+    const months = {
       "01": "jan",
       "02": "feb",
       "03": "mar",
@@ -75,7 +75,7 @@ exports.transactionsService = {
 
     transactions.forEach((transaction) => {
       const transactionMonth = transaction.date.split(".")[1]
-      const month = obj[transactionMonth]
+      const month = months[transactionMonth]
       summary[month] += transaction.sum
     })
 
