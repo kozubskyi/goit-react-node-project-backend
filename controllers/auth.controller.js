@@ -9,24 +9,16 @@ const { authorize } = require("../middlewares/authorize");
 const { prepareUser } = require("../serializers/user.serializer");
 const { prepareUserWithToken } = require("../serializers/auth.serializer");
 
-/**
- * @swagger
- * components:
- *  schemas:
- *   User:
- *   type:object
- *     required:
- *      properties:
- *       id:
- *        type:string
- *        description:The auto-generated id of the user
- *         email:
- *          type:string
- *          description:The email of the user
- *        example:
- *         id:610a804086a24935c94d0ffa
- *         email:anastasiia@gmail.com
- */
+// /**
+//  * @swagger
+//  * components:
+//  *  securitySchemes:
+//     bearerAuth:
+//       type: http
+//       scheme: bearer
+//       bearerFormat: JWT
+
+//  */
 
 router.post(
   "/signup",

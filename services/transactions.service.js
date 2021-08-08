@@ -37,7 +37,7 @@ class TransactionsService {
   }
 
   async getSummary(userId, type) {
-    const transactions = await TransactionModel.find({ owner: new ObjectId(userId), type })
+    const transactions = await TransactionModel.find({ owner: new ObjectId(userId), type });
 
     const obj = {
       "01": "jan",
@@ -69,11 +69,11 @@ class TransactionsService {
       dec: 0
     };
 
-    const thisYearTransactions = transactions.filter((transaction) => {
-      const transactionYear = Number(transaction.date.split(".")[2])
-      const currentYear = new Date(Date.now()).getFullYear()
-      return transactionYear === currentYear
-    })
+    const thisYearTransactions = transactions.filter(transaction => {
+      const transactionYear = Number(transaction.date.split(".")[2]);
+      const currentYear = new Date(Date.now()).getFullYear();
+      return transactionYear === currentYear;
+    });
 
     thisYearTransactions.forEach(transaction => {
       const transactionMonth = transaction.date.split(".")[1];
@@ -85,12 +85,12 @@ class TransactionsService {
   }
 
   async getInfoForPeriod(userId, period) {
-    const transactions = await TransactionModel.find({ owner: new ObjectId(userId) })
+    const transactions = await TransactionModel.find({ owner: new ObjectId(userId) });
 
-    const neededTransactions = transactions.filter((transaction) => {
-      const transactionPeriod = transaction.date.substring(3)
-      return transactionPeriod === period
-    })
+    const neededTransactions = transactions.filter(transaction => {
+      const transactionPeriod = transaction.date.substring(3);
+      return transactionPeriod === period;
+    });
 
     // const info = {
     //   expenses: {},
@@ -106,3 +106,18 @@ class TransactionsService {
 }
 
 exports.transactionsService = new TransactionsService();
+
+const obj = {
+  income: [{ зп: {} }, { "доп.доход": {} }],
+  expenses: [
+    {
+      продукты: {
+        свинина: 100
+      },
+
+      прочее: {
+        книги: 500
+      }
+    }
+  ]
+};
