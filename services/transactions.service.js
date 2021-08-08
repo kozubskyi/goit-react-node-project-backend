@@ -41,7 +41,7 @@ exports.transactionsService = {
   },
 
   getSummary: async (userId, { type, year }) => {
-    const transactions = await TransactionModel.find({ owner: new ObjectId(userId), type })
+    const transactions = await TransactionModel.find({ owner: new ObjectId(userId), type, date: { $regex: year } })
 
     const obj = {
       "01": "jan",
@@ -73,12 +73,7 @@ exports.transactionsService = {
       dec: 0,
     }
 
-    const thisYearTransactions = transactions.filter((transaction) => {
-      const transactionYear = transaction.date.split(".")[2]
-      return transactionYear === year
-    })
-
-    thisYearTransactions.forEach((transaction) => {
+    transactions.forEach((transaction) => {
       const transactionMonth = transaction.date.split(".")[1]
       const month = obj[transactionMonth]
       summary[month] += transaction.sum
@@ -89,12 +84,7 @@ exports.transactionsService = {
 
   getTransactionsForPeriod: async (userId, { type, period }) => {
     // let transactions = await TransactionModel.find({ owner: new Schema.Types.ObjectId(userId), type }) //! Schema.Types.ObjectId не работает
-    let transactions = await TransactionModel.find({ owner: new ObjectId(userId), type })
-
-    transactions = transactions.filter((transaction) => {
-      const transactionPeriod = transaction.date.slice(3)
-      return transactionPeriod === period
-    })
+    const transactions = await TransactionModel.find({ owner: new ObjectId(userId), type, date: { $regex: period } })
 
     return transactions
   },
