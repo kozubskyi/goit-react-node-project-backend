@@ -1,25 +1,25 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "This is an API to a Kapu$ta Finance Project",
+    "description": "This is an API to Kapu$ta Finance Project",
     "version": "1.0.0",
     "title": "Kapu$ta Finance"
   },
   "tags": [
     {
-      "name": "Auth",
+      "name": "auth",
       "description": "Operations about registration and authentication"
     },
     {
-      "name": "User",
+      "name": "user",
       "description": "Operations about setting up user's balance"
     },
     {
-      "name": "Transactions",
+      "name": "transactions",
       "description": "Operations about user's transactions"
     },
     {
-      "name": "Categories",
+      "name": "categories",
       "description": " Operations about available categories for user"
     }
   ],
@@ -27,7 +27,7 @@
     "/auth/signup": {
       "post": {
         "tags": [
-          "Auth"
+          "auth"
         ],
         "summary": "Registers user",
         "produces": [
@@ -77,7 +77,7 @@
     "/auth/signin": {
       "post": {
         "tags": [
-          "Auth"
+          "auth"
         ],
         "summary": "Signs user in into the system",
         "produces": [
@@ -138,7 +138,7 @@
     "/auth/signout": {
       "post": {
         "tags": [
-          "Auth"
+          "auth"
         ],
         "summary": "Signs out current signed in user session",
         "produces": [
@@ -155,7 +155,7 @@
     "/user/balance": {
       "post": {
         "tags": [
-          "User"
+          "user"
         ],
         "summary": "Sets up user's initial balance",
         "consumes": [
@@ -188,7 +188,7 @@
     "/transactions": {
       "post": {
         "tags": [
-          "Transactions"
+          "transactions"
         ],
         "summary": "Sets up user's expenses",
         "consumes": [
@@ -256,7 +256,7 @@
     "/transactions/{id}": {
       "delete": {
         "tags": [
-          "Transactions"
+          "transactions"
         ],
         "summary": "Deletes user's transactions",
         "produces": [
@@ -297,7 +297,7 @@
     "/transactions/summary/{type}/{year}": {
       "get": {
         "tags": [
-          "Transactions"
+          "transactions"
         ],
         "summary": "Finds user's transaction by type and year",
         "produces": [
@@ -394,7 +394,7 @@
     "/transactions/{type}/{period}": {
       "get": {
         "tags": [
-          "Transactions"
+          "transactions"
         ],
         "summary": "Finds user's transaction for a certain period of time",
         "produces": [
@@ -468,7 +468,7 @@
     "/categories/{type}": {
       "get": {
         "tags": [
-          "Categories"
+          "categories"
         ],
         "summary": "Gets available categories",
         "consumes": [
@@ -507,7 +507,7 @@
       },
       "post": {
         "tags": [
-          "Categories"
+          "categories"
         ],
         "summary": "Adds up a new category",
         "description": "This operation is only available with admin access",
@@ -580,7 +580,7 @@
     "/categories/{category}": {
       "delete": {
         "tags": [
-          "Categories"
+          "categories"
         ],
         "summary": "Deletes category",
         "description": "This operation is only available with admin access",
