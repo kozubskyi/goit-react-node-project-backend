@@ -40,6 +40,12 @@ exports.transactionsService = {
     await userService.updateBalance(userId, transaction, "delete")
   },
 
+  getTransactions: async (userId, type) => {
+    const transactions = await TransactionModel.find({ owner: new ObjectId(userId), type })
+
+    return transactions
+  },
+
   getSummary: async (userId, { type, year }) => {
     const transactions = await TransactionModel.find({ owner: new ObjectId(userId), type, date: { $regex: year } })
 
