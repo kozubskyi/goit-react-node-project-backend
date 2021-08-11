@@ -34,7 +34,7 @@ exports.authService = {
     // await UserModel.findOneAndUpdate({ email }, { token, isActive: true, verificationToken: null })
     await UserModel.findOneAndUpdate({ email }, { token, verificationToken: null })
 
-    return { user, balance, token }
+    return { user, token }
   },
 
   signOut: async ({ _id }) => {
