@@ -16,4 +16,10 @@ exports.userService = {
 
     await UserModel.findByIdAndUpdate(userId, { balance })
   },
+
+  getCurrentUser: async (userId) => {
+    const user = await UserModel.findById(userId)
+
+    return user
+  },
 }
