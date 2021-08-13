@@ -39,7 +39,16 @@ exports.transactionsService = {
 
     await userService.updateBalance(userId, transaction, "delete")
 
-    return transaction
+    const transactionToSend = {
+      id: transaction._id,
+      type: transaction.type,
+      category: transaction.category,
+      description: transaction.description,
+      sum: transaction.sum,
+      date: transaction.date,
+    }
+
+    return transactionToSend
   },
 
   getTransactions: async (userId, type) => {
