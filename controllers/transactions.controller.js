@@ -46,7 +46,7 @@ router.get(
   asyncWrapper(async (req, res, _) => {
     const transactions = await transactionsService.getTransactions(req.user._id, req.params.type)
 
-    res.status(200).json(transactions)
+    res.status(200).json(prepareTransactions(transactions))
   })
 )
 
@@ -68,7 +68,7 @@ router.get(
   asyncWrapper(async (req, res, _) => {
     const transactions = await transactionsService.getTransactionsForPeriod(req.user._id, req.params)
 
-    res.status(200).json(transactions)
+    res.status(200).json(prepareTransactions(transactions))
   })
 )
 
