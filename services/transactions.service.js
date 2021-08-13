@@ -16,16 +16,7 @@ exports.transactionsService = {
 
     await userService.updateBalance(userId, transaction, "add")
 
-    const transactionToSend = {
-      id: createdTransaction._id,
-      type: createdTransaction.type,
-      category: createdTransaction.category,
-      description: createdTransaction.description,
-      sum: createdTransaction.sum,
-      date: createdTransaction.date,
-    }
-
-    return transactionToSend
+    return createdTransaction
   },
 
   deleteTransaction: async (userId, id) => {
@@ -39,16 +30,7 @@ exports.transactionsService = {
 
     await userService.updateBalance(userId, transaction, "delete")
 
-    const transactionToSend = {
-      id: transaction._id,
-      type: transaction.type,
-      category: transaction.category,
-      description: transaction.description,
-      sum: transaction.sum,
-      date: transaction.date,
-    }
-
-    return transactionToSend
+    return transaction
   },
 
   getTransactions: async (userId, type) => {
