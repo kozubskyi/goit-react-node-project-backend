@@ -38,6 +38,8 @@ exports.transactionsService = {
     await TransactionModel.findByIdAndDelete(id)
 
     await userService.updateBalance(userId, transaction, "delete")
+
+    return transaction
   },
 
   getTransactions: async (userId, type) => {
