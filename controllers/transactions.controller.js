@@ -5,6 +5,7 @@ const { asyncWrapper, validate, authorize, createSchema } = require("../middlewa
 const { validateTransaction } = require("../validation/validate-transaction")
 const { typeSchema, summarySchema, periodSchema } = require("../validation/schemes/transactions.schemes")
 const { transactionsService } = require("../services/transactions.service")
+const { prepareTransactions } = require("../serializers")
 
 router.post(
   "/",
@@ -15,7 +16,7 @@ router.post(
 
     const response = {
       message: "Transaction has been created",
-      transaction,
+      transaction: prepareTransactions(transaction),
     }
 
     res.status(201).json(response)
@@ -31,7 +32,7 @@ router.delete(
 
     const response = {
       message: "Transaction has been deleted",
-      transaction,
+      transaction: prepareTransactions(transaction),
     }
 
     res.status(200).json(response)
