@@ -27,9 +27,14 @@ router.delete(
   authorize,
   validate(createSchema("id"), "params"),
   asyncWrapper(async (req, res, _) => {
-    await transactionsService.deleteTransaction(req.user._id, req.params.id)
+    const transaction = await transactionsService.deleteTransaction(req.user._id, req.params.id)
 
-    res.status(200).json({ message: "Transaction has been deleted" })
+    const response = {
+      message: "Transaction has been deleted",
+      transaction,
+    }
+
+    res.status(200).json(response)
   })
 )
 
