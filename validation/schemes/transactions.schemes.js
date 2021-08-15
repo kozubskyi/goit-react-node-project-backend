@@ -1,6 +1,6 @@
 const Joi = require("joi").extend(require("@joi/date"))
 
-exports.typeSchema = exports.summarySchema = Joi.object({
+exports.typeSchema = Joi.object({
   type: Joi.string().valid("expense", "income").required(),
 })
 
