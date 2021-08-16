@@ -43,8 +43,34 @@
         },
         "responses": {
           "201": {
-            "description": "successful operation"
-          },
+            "description": "successful operation",
+            "content":{
+            "application/json":{
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User has been created"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "balance": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  }
+                }
+              }
+            }
+          }}},
           "409": {
             "description": "The user with such email already exists"
           }
@@ -70,8 +96,37 @@
         },
         "responses": {
           "201": {
-            "description": "successful operation"
-          },
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User has been signed in"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "balance": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  }
+                }
+              }
+            }
+          }}},
           "401": {
             "description": "Invalid password supplied"
           },
@@ -117,10 +172,15 @@
         },
         "responses": {
           "200": {
-            "description": "operation successful"
+            "description": "operation successful",
+            "content": {
+              "application/json": {
+            "schema": {
+              "$ref": "#/definitions/Balance"
+            }
           }
         }
-      }
+      }}}
     },
     "/transactions": {
       "post": {
@@ -142,6 +202,8 @@
         "responses": {
           "200": {
             "description": "successful operation",
+            "content": {
+              "application/json": {
             "schema": {
               "type": "object",
               "properties": {
@@ -171,13 +233,13 @@
                     "date": {
                       "type": "string",
                       "format": "date",
-                      "example": "08-22-2021"
+                      "example": "08.22.2021"
                     }
                   }
                 }
               }
             }
-          },
+          }}},
           "400": {
             "description": "Invalid input"
           }
@@ -446,7 +508,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/definitions/Transactions"
+                "$ref": "#/definitions/NewCategory"
               }
             }
           },
@@ -470,8 +532,30 @@
         ],
         "responses": {
           "201": {
-            "description": "successful operation"
-          },
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Category has been created"
+                },
+                "category": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }}},
           "400": {
             "description": "Invalid input"
           }
@@ -573,7 +657,7 @@
         "date": {
           "type": "string",
           "format": "date",
-          "example": "22-08-2021"
+          "example": "22.08.2021"
         }
       },
       "xml": {
@@ -616,17 +700,12 @@
         }
       }
     },
-    "Categories_income": {
+    "NewCategory": {
       "type": "object",
       "properties": {
-        "categories": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "expense",
-              "income"
-            ]
+        "name": {
+          "name": {
+            "type": "string"
           }
         }
       }
